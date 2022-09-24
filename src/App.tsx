@@ -1,18 +1,15 @@
 import { Box, Input } from "@mui/material";
-import fetch from "node-fetch";
 import React, { useEffect, useState } from "react";
-
-interface DictionarySearch {
-  word: string;
-  meanings: any[];
-}
+import { getMeaning } from "./node/dictionary-api/index";
+import {
+  DictionarySearch,
+  initialValueWordInfo,
+  Meaning,
+  WordInfo,
+} from "./typings";
 
 function App() {
-  const initialValue: DictionarySearch = {
-    word: "hello",
-    meanings: [],
-  };
-  const [state, setState] = useState<DictionarySearch>(initialValue);
+  const [state, setState] = useState<DictionarySearch>(initialValueWordInfo);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setState((previous) => ({
@@ -21,30 +18,14 @@ function App() {
     }));
   };
 
-  const getMeaning = async (word: string) => {
-    try {
-      let url = "https://api.dictionaryapi.dev/api/v2/entries/en/" + word;
-      let response = await fetch(url);
-      let data = await response.json();
-      console.log("Meanings: ", data);
-      if (data.title !== "No Definitions Found") {
-        setState((previous) => ({
-          ...previous,
-          meanings: data,
-        }));
-      }else{
-        setState((previous) => ({
-          ...previous,
-          meanings: [],
-        }));
-      }
-    } catch (error) {
-      return error;
-    }
-  };
-
   useEffect(() => {
-    getMeaning(state.word);
+    getMeaning(state.word).then(data => {
+      setState((previous) => ({
+        ...previous,
+        results: data,
+      }));
+    });
+    
   }, [state.word]);
 
   return (
@@ -53,16 +34,14 @@ function App() {
       <Input
         sx={{ margin: 8 }}
         id="search word"
-        value={state.word}
+        value={state?.word}
         onChange={handleChange}
       />
       <div style={{ width: "100%", height: "60%" }}>
-        {state?.meanings?.map((words: any) => (
-          words?.meanings?.map((wordInfo: any) => (
-            <p>{wordInfo?.partOfSpeech}</p>
+        {state?.results?.map((wordInfo: WordInfo) =>
+          wordInfo?.meanings?.map((meaning: Meaning) => (
+            <p>{meaning?.partOfSpeech}</p>
           ))
-        )
-          
         )}
       </div>
     </Box>
