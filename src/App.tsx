@@ -1,15 +1,12 @@
-import { Box, Input } from "@mui/material";
+import { TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { getMeaning } from "./node/dictionary-api/index";
-import {
-  DictionarySearch,
-  initialValueWordInfo,
-  Meaning,
-  WordInfo,
-} from "./typings";
+import { getMeaningWordsAPI } from "./node/dictionary-api/index";
+import { initialValueWordResult, WordInfo } from "./typings";
+import "./App-style.css";
+import { Box, Container } from "@mui/system";
 
 function App() {
-  const [state, setState] = useState<DictionarySearch>(initialValueWordInfo);
+  const [state, setState] = useState<WordInfo>(initialValueWordResult);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setState((previous) => ({
@@ -19,33 +16,12 @@ function App() {
   };
 
   useEffect(() => {
-    getMeaning(state.word).then(data => {
-      setState((previous) => ({
-        ...previous,
-        results: data,
-      }));
+    getMeaningWordsAPI(state.word).then((data) => {
+      setState(data);
     });
-    
   }, [state.word]);
 
-  return (
-    <Box sx={{ width: 300, height: 300 }}>
-      <h1>Hello world</h1>
-      <Input
-        sx={{ margin: 8 }}
-        id="search word"
-        value={state?.word}
-        onChange={handleChange}
-      />
-      <div style={{ width: "100%", height: "60%" }}>
-        {state?.results?.map((wordInfo: WordInfo) =>
-          wordInfo?.meanings?.map((meaning: Meaning) => (
-            <p>{meaning?.partOfSpeech}</p>
-          ))
-        )}
-      </div>
-    </Box>
-  );
+  return <Container></Container>;
 }
 
 export default App;
