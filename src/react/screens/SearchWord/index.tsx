@@ -1,11 +1,11 @@
 import { TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { getMeaningWordsAPI } from "./node/dictionary-api/index";
-import { initialValueWordResult, WordInfo } from "./typings";
-import "./App-style.css";
 import { Box, Container } from "@mui/system";
+import { initialValueWordResult, WordInfo } from "../../../typings";
+import { getMeaningWordsAPI } from "../../../node/dictionary-api";
+import "../../../style/App-style.css"
 
-function App() {
+function SearchWord() {
   const [state, setState] = useState<WordInfo>(initialValueWordResult);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,4 +73,4 @@ function App() {
   );
 }
 
-export default App;
+export default SearchWord;

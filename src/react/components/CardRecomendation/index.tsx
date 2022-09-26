@@ -1,6 +1,6 @@
 import { Box } from "@mui/system";
 import React, { FC } from "react";
-import { WordInfo } from "../../typings";
+import { WordInfo } from "../../../typings";
 
 interface Props {
   info: WordInfo;
